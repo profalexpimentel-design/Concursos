@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prof. Xande - Razão, Proporção, Regra de Três e Porcentagem</title>
+<style>
+:root {
+  --primary: #0A1F44;
+  --accent: #F5B301;
+  --bg-box: #F0F4FA;
+  --text: #333333;
+  --white: #ffffff;
+  --correct: #2e7d32;
+  --wrong: #c62828;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #1a2a3a; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; padding: 10px; }
+#book-container { width: 100%; max-width: 900px; height: 92vh; display: flex; flex-direction: column; }
+#menu-toggle { position: fixed; top: 15px; left: 15px; z-index: 1001; background: var(--accent); color: var(--primary); border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+#side-menu { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--primary); color: var(--white); transition: 0.3s ease; z-index: 1000; padding: 20px; box-shadow: 2px 0 12px rgba(0,0,0,0.5); overflow-y: auto; }
+#side-menu.active { left: 0; }
+#side-menu h3 { color: var(--accent); margin-bottom: 15px; border-bottom: 1px solid var(--accent); padding-bottom: 10px; font-size: 18px; }
+#side-menu ul { list-style: none; }
+#side-menu li { padding: 12px 5px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.12); font-size: 14px; transition: color 0.2s; }
+#side-menu li:hover { color: var(--accent); padding-left: 10px; }
+.book { flex: 1; position: relative; background: var(--white); border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden; }
+.page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); display: none; flex-direction: column; animation: pageIn 0.4s ease; }
+.page.active { display: flex; }
+@keyframes pageIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+.page-header { background: var(--primary); color: var(--white); padding: 14px 22px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.header-logo { font-weight: bold; font-size: 16px; }
+.header-logo span { color: var(--accent); }
+.header-cap { background: var(--accent); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }
+.content { padding: 28px; overflow-y: auto; flex: 1; line-height: 1.7; color: var(--text); }
+h2 { color: var(--primary); border-left: 5px solid var(--accent); padding-left: 14px; margin-bottom: 18px; font-size: 22px; }
+h3 { color: var(--primary); margin: 18px 0 8px; font-size: 17px; }
+.box-exercise { background: var(--bg-box); border-radius: 8px; padding: 18px; margin: 14px 0; border-left: 4px solid var(--primary); font-size: 15px; }
+.res-highlight { color: #c88600; font-weight: bold; }
+.gabarito-content { display: none; margin-top: 10px; padding: 12px; background: #e8f0fe; border-radius: 6px; border-left: 4px solid var(--accent); font-size: 14px; }
+.gabarito-content.show { display: block; }
+.quiz-q { border: 1px solid #dde0e4; border-radius: 8px; padding: 16px; margin: 14px 0; font-size: 14px; }
+.quiz-q p { margin-bottom: 6px; }
+.opts { margin: 10px 0; }
+.opt { display: block; padding: 9px 12px; margin: 6px 0; border: 1.5px solid #dde0e4; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 14px; }
+.opt:hover { background: #f0f4fa; border-color: var(--primary); }
+.opt.selected { background: #e8f0fe; border-color: var(--primary); font-weight: bold; }
+.opt.correct { background: #e8f5e9; border-color: var(--correct); color: var(--correct); font-weight: bold; }
+.opt.wrong { background: #ffebee; border-color: var(--wrong); color: var(--wrong); font-weight: bold; }
+.opt.disabled { pointer-events: none; opacity: 0.75; }
+.btn-confirmar { background: var(--accent); color: var(--primary); border: none; padding: 9px 18px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 6px; }
+.btn-confirmar:hover { background: #e0a400; }
+.btn-confirmar:disabled { background: #b0b5bd; cursor: not-allowed; }
+.feedback { font-weight: bold; margin-top: 8px; font-size: 14px; }
+.feedback.certo { color: var(--correct); }
+.feedback.errado { color: var(--wrong); }
+.result-box { background: var(--white); border-radius: 12px; padding: 24px 28px; max-width: 420px; margin: 0 auto; color: var(--text); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+.result-score { font-size: 44px; font-weight: bold; color: var(--accent); margin: 10px 0; }
+.result-msg { font-size: 17px; font-weight: bold; color: var(--primary); margin-bottom: 6px; }
+.result-detail { font-size: 14px; color: #555; margin-bottom: 14px; }
+.btn-reiniciar { background: var(--primary); color: var(--white); border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
+.btn-reiniciar:hover { background: #14305e; }
+.nav-controls { background: #f0f1f3; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #dde0e4; flex-shrink: 0; }
+.nav-btn { background: var(--primary); color: var(--white); border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
+.nav-btn:hover { background: #14305e; }
+.nav-btn:disabled { background: #b0b5bd; cursor: not-allowed; }
+.page-cover { background: linear-gradient(135deg, #0A1F44 0%, #12305e 100%); color: var(--white); text-align: center; justify-content: center; align-items: center; }
+.cover-logo-img { width: 160px; height: auto; margin-bottom: 15px; border-radius: 8px; }
+.cover-title { font-size: 30px; margin-bottom: 12px; padding: 0 25px; line-height: 1.3; }
+.cover-sub { font-size: 17px; color: var(--accent); }
+.cover-footer { margin-top: 40px; font-size: 13px; color: rgba(255,255,255,0.8); }
+.cover-divider { width: 60px; height: 3px; background: var(--accent); margin: 15px auto; border-radius: 3px; }
+table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; }
+th { background: var(--primary); color: var(--white); padding: 8px; border: 1px solid #ccc; }
+td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+.dica { background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px; padding: 14px; margin: 14px 0; font-size: 14px; }
+.exercicio-num { font-weight: bold; color: var(--primary); }
+ul, ol { padding-left: 22px; margin: 8px 0; }
+li { margin-bottom: 6px; }
+.expr { background: var(--primary); color: var(--white); border-radius: 8px; padding: 14px 18px; margin: 12px 0; font-size: 18px; font-weight: bold; text-align: center; }
+.passo { background: var(--bg-box); border-radius: 8px; padding: 14px 18px; margin: 10px 0; border-left: 4px solid var(--accent); font-size: 14px; }
+.banca { display: inline-block; background: var(--primary); color: var(--accent); padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-bottom: 6px; }
+@media (max-width: 600px) { .content { padding: 18px; } .cover-title { font-size: 24px; } .cover-logo-img { width: 120px; } h2 { font-size: 19px; } .nav-btn { padding: 8px 14px; font-size: 13px; } .result-score { font-size: 36px; } }
+</style>
+</head>
+<body>
+
+<button id="menu-toggle">☰ MENU</button>
+
+<nav id="side-menu">
+  <h3>📑 Sumário</h3>
+  <ul>
+    <li onclick="goToPage(0)">Capa</li>
+    <li onclick="goToPage(1)">1. Teoria: Razão e Proporção</li>
+    <li onclick="goToPage(2)">2. Teoria: Regra de Três</li>
+    <li onclick="goToPage(3)">3. Teoria: Porcentagem</li>
+    <li onclick="goToPage(4)">4. Exercícios Resolvidos</li>
+    <li onclick="goToPage(5)">5. Quiz: Exercícios Propostos</li>
+    <li onclick="goToPage(6)">6. Quiz: Concursos (I)</li>
+    <li onclick="goToPage(7)">7. Quiz: Concursos (II)</li>
+    <li onclick="goToPage(8)">8. Resumo</li>
+    <li onclick="goToPage(9)">Resultado Final</li>
+  </ul>
+</nav>
+
+<div id="book-container">
+  <div class="book">
+
+    <div class="page page-cover active">
+      <img src="logo.png" alt="Logo Prof. Xande" class="cover-logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
+      <div id="fallbackLogo" style="display:none; font-size:90px; color:var(--accent); font-weight:bold;">X+</div>
+      <div class="cover-divider"></div>
+      <h1 class="cover-title">Razão, Proporção, Regra de Três e Porcentagem</h1>
+      <p class="cover-sub">Preparatório para Concursos Públicos</p>
+      <p class="cover-footer">Prof. Xande | Matemática com Propósito</p>
+    </div>
+
+    <div class="page">
+      <div class="page-header"><div class="header-logo"><span>X+</span> Prof. Xande</div><div class="header-cap">CONCURSOS</div></div>
+      <div class="content">
+        <h2>1. Razão e Proporção</h2>
+        <p><strong>Razão</strong> é a comparação entre duas grandezas, expressa como uma divisão (fração).</p>
+        <div class="expr">razão = a / b &nbsp;&nbsp;(lê-se "a está para b")</div>
+        <p><strong>Proporção</strong> é a igualdade entre duas razões.</p>
+        <div class="expr">a / b = c / d</div>
+        <p>Propriedade fundamental: o produto dos meios é igual ao produto dos extremos.</p>
+        <div class="expr">a × d = b × c</div>
+        <h3>Grandezas direta e inversamente proporcionais</h3>
+        <ul>
+          <li><strong>Diretamente proporcionais:</strong> quando uma aumenta, a outra aumenta na mesma proporção.</li>
+          <li><strong>Inversamente proporcionais:</strong> quando uma aumenta, a outra diminui na mesma proporção.</li>
+        </ul>
+        <div class="dica">💡 <strong>Dica do Prof:</strong> em concursos, a divisão em partes proporcionais (lucros, prejuízos, cotas) é muito cobrada. Identifique se é direta ou inversa antes de montar a conta.</div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header"><div class="header-logo"><span>X+</span> Prof. Xande</div><div class="header-cap">CONCURSOS</div></div>
+      <div class="content">
+        <h2>2. Regra de Três</h2>
+        <p>A <strong>regra de três</strong> é usada para resolver problemas de proporcionalidade com uma grandeza desconhecida.</p>
+        <h3>Regra de três simples</h3>
+        <p>Envolve apenas <strong>duas grandezas</strong>. Ex.: se 6 funcionários fazem uma tarefa em 4 horas, quanto tempo levam 10 funcionários?</p>
+        <div class="passo">
+          <strong>Passo 1:</strong> montar a tabela.<br>
+          <strong>Passo 2:</strong> verificar se é direta ou inversa.<br>
+          <strong>Passo 3:</strong> armar a proporção e resolver.
+        </div>
+        <h3>Regra de três composta</h3>
+        <p>Envolve <strong>três ou mais grandezas</strong>. É a mais cobrada em concursos (FCC, CESPE, FGV).</p>
+        <div class="dica">⚠️ <strong>Atenção:</strong> na regra de três composta, compare cada grandeza conhecida com a desconhecida separadamente, verificando se é direta ou inversa. Inverta as colunas das grandezas inversamente proporcionais antes de montar a proporção.</div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header"><div class="header-logo"><span>X+</span> Prof. Xande</div><div class="header-cap">CONCURSOS</div></div>
+      <div class="content">
+        <h2>3. Porcentagem</h2>
+        <p>Porcentagem é uma <strong>razão de denominador 100</strong>. O símbolo % significa "por cento", ou seja, a cada 100.</p>
+        <div class="expr">25% = 25 / 100 = 0,25</div>
+        <h3>Como calcular</h3>
+        <p>Para calcular <strong>x% de um valor</strong>, multiplique o valor pela fração:</p>
+        <div class="expr">x% de N = (x / 100) × N</div>
+        <div class="box-exercise">
+          <p><strong>Exemplo:</strong> quanto é 30% de R$ 200?</p>
+          <p>30% de 200 = (30/100) × 200 = <span class="res-highlight">R$ 60</span></p>
+        </div>
+        <h3>Aumento e desconto</h3>
+        <ul>
+          <li><strong>Aumento de x%:</strong> multiplicar por (1 + x/100).</li>
+          <li><strong>Desconto de x%:</strong> multiplicar por (1 − x/100).</li>
+        </ul>
+        <div class="dica">🎯 <strong>Dica do Prof:</strong> para resolver porcentagem por regra de três, monte a proporção "valor total está para 100% assim como parte está para x%".</div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header"><div class="header-logo"><span>X+</span> Prof. Xande</div><div class="header-cap">CONCURSOS</div></div>
+      <div class="content">
+        <h2>4. Exercícios Resolvidos</h2>
+        <div class="box-exercise">
+          <p class="exercicio-num">Exemplo 1 — Regra de três simples (inversa)</p>
+          <p>6 funcionários realizam uma tarefa em 4 horas. Em quanto tempo 10 funcionários realizam a mesma tarefa?</p>
+          <p><em>Resolução:</em> grandezas inversamente proporcionais (mais funcionários = menos horas).</p>
+          <p>6 × 4 = 10 × x → 24 = 10x → x = 2,4 h = <span class="res-highlight">2h24min</span></p>
+        </div>
+        <div class="box-exercise">
+          <p class="exercicio-num">Exemplo 2 — Regra de três composta</p>
+          <p>5 operários transportam 4 m³ de areia em 2 horas. Quantos m³ transportarão 13 operários no mesmo tempo?</p>
+          <p><em>Resolução:</em> diretamente proporcionais (mais operários = mais areia).</p>
+          <p>5/13 = 4/x → 5x = 52 → x = 10,4 m³</p>
+          <p>Transportarão a mais: 10,4 − 4 = <span class="res-highlight">6,4 m³</span></p>
+        </div>
+        <div class="box-exercise">
+          <p class="exercicio-num">Exemplo 3 — Porcentagem</p>
+          <p>Uma mercadoria custa R$ 250 e sofre um aumento de 20%. Qual o novo preço?</p>
+          <p><em>Resolução:</em> aumento de 20% = multiplicar por 1,20.</p>
+          <p>250 × 1,20 = <span class="res-highlight">R$ 300</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header"><div class="header-logo"><span>X+</span> Prof. Xande</div><div class="header-cap">CONCURSOS</div></div>
+      <div class="content">
+        <h2>5. Quiz: Exercícios Propostos</h2>
+        <p>Marque uma alternativa e clique em <strong>"Confirmar"</strong>. O gabarito só aparece depois da sua resposta! 💪</p>
+
+        <div class="quiz-q" data-correct="0">
+          <p class="exercicio-num">1.</p>
+          <p>Se 6 funcionários fazem uma tarefa em 4 horas, 10 funcionários (mesma capacidade) fazem a mesma tarefa em:</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q1" value="0"> a) 2h24min</label>
+            <label class="opt"><input type="radio" name="q1" value="1"> b) 2h40min</label>
+            <label class="opt"><input type="radio" name="q1" value="2"> c) 3h20min</label>
+            <label class="opt"><input type="radio" name="q1" value="3"> d) 3h30min</label>
+            <label class="opt"><input type="radio" name="q1" value="4"> e) 2h50min</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">Inversa: 6×4 = 10×x → 24 = 10x → x = 2,4h = <strong>2h24min</strong>.</div>
+        </div>
+
+        <div class="quiz-q" data-correct="2">
+          <p class="exercicio-num">2.</p>
+          <p>5 operários transportam 4 m³ de areia em 2 horas. Quantos m³ a mais transportarão 13 operários no mesmo tempo?</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q2" value="0"> a) 5,3 m³</label>
+            <label class="opt"><input type="radio" name="q2" value="1"> b) 5,8 m³</label>
+            <label class="opt"><input type="radio" name="q2" value="2"> c) 6,4 m³</label>
+            <label class="opt"><input type="radio" name="q2" value="3"> d) 7,1 m³</label>
+            <label class="opt"><input type="radio" name="q2" value="4"> e) 8,2 m³</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">Direta: 5/13 = 4/x → x = 10,4. A mais: 10,4 − 4 = <strong>6,4 m³</strong>.</div>
+        </div>
+
+        <div class="quiz-q" data-correct="1">
+          <p class="exercicio-num">3.</p>
+          <p>Uma mercadoria de R$ 250 sofre aumento de 20%. O novo preço é:</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q3" value="0"> a) R$ 275</label>
+            <label class="opt"><input type="radio" name="q3" value="1"> b) R$ 300</label>
+            <label class="opt"><input type="radio" name="q3" value="2"> c) R$ 280</label>
+            <label class="opt"><input type="radio" name="q3" value="3"> d) R$ 290</label>
+            <label class="opt"><input type="radio" name="q3" value="4"> e) R$ 310</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">250 × 1,20 = <strong>R$ 300</strong>.</div>
+        </div>
+
+        <div class="quiz-q" data-correct="0">
+          <p class="exercicio-num">4.</p>
+          <p>Um profissional leva 10 dias trabalhando 6 horas/dia. Para concluir em 8 dias, quantas horas/dia deve trabalhar?</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q4" value="0"> a) 7,5</label>
+            <label class="opt"><input type="radio" name="q4" value="1"> b) 8,0</label>
+            <label class="opt"><input type="radio" name="q4" value="2"> c) 6,5</label>
+            <label class="opt"><input type="radio" name="q4" value="3"> d) 7,0</label>
+            <label class="opt"><input type="radio" name="q4" value="4"> e) 8,5</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">Inversa: 10×6 = 8×x → 60 = 8x → x = <strong>7,5 horas</strong>.</div>
+        </div>
+
+        <div class="quiz-q" data-correct="2">
+          <p class="exercicio-num">5.</p>
+          <p>Laura pagou R$ 11,20 por 350g de presunto. Quanto pagaria por 600g do mesmo produto?</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q5" value="0"> a) R$ 18,10</label>
+            <label class="opt"><input type="radio" name="q5" value="1"> b) R$ 18,30</label>
+            <label class="opt"><input type="radio" name="q5" value="2"> c) R$ 19,20</label>
+            <label class="opt"><input type="radio" name="q5" value="3"> d) R$ 19,80</label>
+            <label class="opt"><input type="radio" name="q5" value="4"> e) R$ 20,70</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">Direta: 350/600 = 11,20/x → 350x = 6720 → x = <strong>R$ 19,20</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header"><div class="header-logo"><span>X+</span> Prof. Xande</div><div class="header-cap">CONCURSOS</div></div>
+      <div class="content">
+        <h2>6. Quiz: Questões de Concursos (I)</h2>
+        <p>Questões reais de bancas. Marque, confirme e veja a resolução! 🏛️</p>
+
+        <div class="quiz-q" data-correct="2">
+          <p><span class="banca">FGV 2018 / BANESTES</span></p>
+          <p class="exercicio-num">Questão 1</p>
+          <p>Cinco caminhões iguais, fazendo uma viagem por dia, transportam toda a produção de soja em 12 dias. No final do 3º dia, 2 caminhões enguiçaram. Os outros transportaram o restante em mais:</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="qa1" value="0"> a) 12 dias</label>
+            <label class="opt"><input type="radio" name="qa1" value="1"> b) 16 dias</label>
+            <label class="opt"><input type="radio" name="qa1" value="2"> c) 15 dias</label>
+            <label class="opt"><input type="radio" name="qa1" value="3"> d) 18 dias</label>
+            <label class="opt"><input type="radio" name="qa1" value="4"> e) 20 dias</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">Após 3 dias, faltam 9 dias com 5 caminhões. Com 3 caminhões: 5×9 = 3×x → x = <strong>15 dias</strong>. ✅ <strong>Resposta: C) 15 dias</strong></div>
+        </div>
+
+        <div class="quiz-q" data-correct="2">
+          <p><span class="banca">VUNESP 2018 / CM de Indaiatuba</span></p>
+          <p class="exercicio-num">Questão 2</p>
+          <p>5 operários transportaram 4 m³ de areia em 2 horas. A quantidade de areia que 13 operários transportarão a mais, no mesmo tempo, é:</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="qa2" value="0"> a) 8,2 m³</label>
+            <label class="opt"><input type="radio" name="qa2" value="1"> b) 7,1 m³</label>
+            <label class="opt"><input type="radio" name="qa2" value="2"> c) 6,4 m³</label>
+            <label class="opt"><input type="radio" name="qa2" value="3"> d) 5,8 m³</label>
+            <label class="opt"><input type="radio" name="qa2" value="4"> e) 5,3 m³</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">5/13 = 4/x → x = 10,4. A mais: 10,4 − 4 = <strong>6,4 m³</strong>. ✅ <strong>Resposta: C) 6,4 m³</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header"><div class="header-logo"><span>X+</span> Prof. Xande</div><div class="header-cap">CONCURSOS</div></div>
+      <div class="content">
+        <h2>7. Quiz: Questões de Concursos (II)</h2>
+        <p>Mais questões reais. Último treino antes do resultado! 💪</p>
+
+        <div class="quiz-q" data-correct="3">
+          <p><span class="banca">FCC 2018 / CL-DF</span></p>
+          <p class="exercicio-num">Questão 3</p>
+          <p>Em 12 dias, 15 funcionários fizeram 75% de uma tarefa. Para terminar os 25% restantes em 3 dias, quantos funcionários serão necessários?</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="qa3" value="0"> a) 18</label>
+            <label class="opt"><input type="radio" name="qa3" value="1"> b) 21</label>
+            <label class="opt"><input type="radio" name="qa3" value="2"> c) 24</label>
+            <label class="opt"><input type="radio" name="qa3" value="3"> d) 20</label>
+            <label class="opt"><input type="radio" name="qa3" value="4"> e) 15</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">Dias inversa, percentual direta: 15/x = (3/12) × (75/25) → 15/x = (1/4)×3 = 3/4 → x = <strong>20</strong>. ✅ <strong>Resposta: D) 20</strong></div>
+        </div>
+
+        <div class="quiz-q" data-correct="1">
+          <p><span class="banca">FGV 2018 / TJ-SC</span></p>
+          <p class="exercicio-num">Questão 4</p>
+          <p>Dois atendentes atendem 32 clientes em 2h40min. Com a mesma eficiência, três atendentes atenderão 60 clientes em:</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="qa4" value="0"> a) 2h48min</label>
+            <label class="opt"><input type="radio" name="qa4" value="1"> b) 3h20min</label>
+            <label class="opt"><input type="radio" name="qa4" value="2"> c) 3h10min</label>
+            <label class="opt"><input type="radio" name="qa4" value="3"> d) 2h40min</label>
+            <label class="opt"><input type="radio" name="qa4" value="4"> e) 3h30min</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">160 min. Atendentes inversa, clientes direta: 160/x = (3/2) × (32/60) → x = 200 min = <strong>3h20min</strong>. ✅ <strong>Resposta: B) 3h20min</strong></div>
+        </div>
+
+        <div class="quiz-q" data-correct="0">
+          <p><span class="banca">CESPE / PM-AL 2017</span></p>
+          <p class="exercicio-num">Questão 5</p>
+          <p>No tanque A há 240L de gasolina e 60L de álcool; no tanque B, 150L de gasolina e 50L de álcool. Para a proporção álcool/gasolina de A ficar igual à de B, deve-se acrescentar em A:</p>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="qa5" value="0"> a) 20 litros de álcool</label>
+            <label class="opt"><input type="radio" name="qa5" value="1"> b) 25 litros de álcool</label>
+            <label class="opt"><input type="radio" name="qa5" value="2"> c) 15 litros de álcool</label>
+            <label class="opt"><input type="radio" name="qa5" value="3"> d) 30 litros de álcool</label>
+            <label class="opt"><input type="radio" name="qa5" value="4"> e) 10 litros de álcool</label>
+          </div>
+          <button class="btn-confirmar" onclick="confirmar(this)">Confirmar</button>
+          <div class="feedback"></div>
+          <div class="gabarito-content">Proporção B: 50/150 = 1/3. Em A: (60+X)/240 = 1/3 → 240/3 = 60+X → 80 = 60+X → X = <strong>20 litros</strong>. ✅ <strong>Resposta: A) 20 litros de álcool</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="page-header"><div class="header-logo"><span>X+</span> Prof. Xande</div><div class="header-cap">CONCURSOS</div></div>
+      <div class="content">
+        <h2>8. Resumo do Capítulo</h2>
+        <ul>
+          <li>✅ <strong>Razão:</strong> comparação entre grandezas (a/b).</li>
+          <li>✅ <strong>Proporção:</strong> igualdade de razões; produto dos meios = produto dos extremos.</li>
+          <li>✅ <strong>Diretamente proporcionais:</strong> crescem juntas.</li>
+          <li>✅ <strong>Inversamente proporcionais:</strong> uma cresce, outra decresce.</li>
+          <li>✅ <strong>Regra de três simples:</strong> duas grandezas.</li>
+          <li>✅ <strong>Regra de três composta:</strong> três ou mais grandezas (muito cobrada).</li>
+          <li>✅ <strong>Porcentagem:</strong> razão de denominador 100; aumento ×(1+x%), desconto ×(1−x%).</li>
+        </ul>
+        <div class="dica">🎯 <strong>Não esqueça:</strong> em concursos, identifique sempre se a grandeza é direta ou inversa antes de armar a conta. Esse é o erro mais comum!</div>
+      </div>
+    </div>
+
+    <div class="page page-cover">
+      <img src="logo.png" alt="Logo Prof. Xande" class="cover-logo-img" onerror="this.style.display='none'; document.getElementById('fallbackLogo2').style.display='block';">
+      <div id="fallbackLogo2" style="display:none; font-size:90px; color:var(--accent); font-weight:bold;">🚀</div>
+      <div class="cover-divider"></div>
+      <h1 class="cover-title">Você conseguiu!</h1>
+      <div class="result-box">
+        <p class="result-msg" id="resultMsg">Seu resultado no Quiz</p>
+        <div class="result-score" id="resultScore">- / 10</div>
+        <p class="result-detail" id="resultDetail">Complete o quiz para ver seu desempenho.</p>
+        <button class="btn-reiniciar" onclick="reiniciarQuiz()">🔄 Refazer o Quiz</button>
+      </div>
+      <p class="cover-footer">X+ Prof. Xande | Matemática com Propósito</p>
+    </div>
+
+  </div>
+
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="changePage(-1)" disabled>⬅ Anterior</button>
+    <span id="pageIndicator" style="font-weight: bold; color: #0A1F44;">Página 1 / 10</span>
+    <button class="nav-btn" id="nextBtn" onclick="changePage(1)">Próxima ➡</button>
+  </div>
+</div>
+
+<script>
+let currentPage = 0;
+let acertos = 0;
+let respondidas = 0;
+const TOTAL_QUESTOES = 10;
+
+const pages = document.querySelectorAll('.page');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const pageIndicator = document.getElementById('pageIndicator');
+const sideMenu = document.getElementById('side-menu');
+const menuToggle = document.getElementById('menu-toggle');
+
+function updatePage() {
+  pages.forEach(function(p, i) {
+    if (i === currentPage) { p.classList.add('active'); } else { p.classList.remove('active'); }
+  });
+  prevBtn.disabled = (currentPage === 0);
+  nextBtn.disabled = (currentPage === pages.length - 1);
+  pageIndicator.innerText = 'Página ' + (currentPage + 1) + ' / ' + pages.length;
+  sideMenu.classList.remove('active');
+  if (currentPage === pages.length - 1) { mostrarResultado(); }
+}
+
+function changePage(step) {
+  currentPage = currentPage + step;
+  if (currentPage < 0) { currentPage = 0; }
+  if (currentPage >= pages.length) { currentPage = pages.length - 1; }
+  updatePage();
+}
+
+function goToPage(index) {
+  currentPage = index;
+  updatePage();
+}
+
+function selecionar(opt) {
+  var quiz = opt.closest('.quiz-q');
+  if (quiz.dataset.locked === 'true') { return; }
+  var inputs = quiz.querySelectorAll('.opt');
+  for (var i = 0; i < inputs.length; i++) { inputs[i].classList.remove('selected'); }
+  opt.classList.add('selected');
+  opt.querySelector('input').checked = true;
+}
+
+function confirmar(btn) {
+  var quiz = btn.closest('.quiz-q');
+  if (quiz.dataset.locked === 'true') { return; }
+  var selected = quiz.querySelector('.opt.selected');
+  if (!selected) { alert('Escolha uma alternativa antes de confirmar!'); return; }
+
+  var correta = parseInt(quiz.dataset.correct, 10);
+  var escolhida = parseInt(selected.querySelector('input').value, 10);
+  var feedback = quiz.querySelector('.feedback');
+  var gabarito = quiz.querySelector('.gabarito-content');
+
+  quiz.dataset.locked = 'true';
+  var opts = quiz.querySelectorAll('.opt');
+  for (var j = 0; j < opts.length; j++) { opts[j].classList.add('disabled'); }
+  for (var k = 0; k < opts.length; k++) {
+    if (k === correta) { opts[k].classList.add('correct'); }
+  }
+  if (escolhida !== correta) { selected.classList.add('wrong'); }
+
+  respondidas = respondidas + 1;
+  if (escolhida === correta) {
+    acertos = acertos + 1;
+    feedback.textContent = '✅ Acertou!';
+    feedback.className = 'feedback certo';
+  } else {
+    feedback.textContent = '❌ Errou! Veja a resolução abaixo.';
+    feedback.className = 'feedback errado';
+  }
+  gabarito.classList.add('show');
+  btn.disabled = true;
+  btn.textContent = 'Confirmado';
+}
+
+function mostrarResultado() {
+  var scoreEl = document.getElementById('resultScore');
+  var msgEl = document.getElementById('resultMsg');
+  var detailEl = document.getElementById('resultDetail');
+
+  if (respondidas === 0) {
+    scoreEl.textContent = '- / ' + TOTAL_QUESTOES;
+    msgEl.textContent = 'Você ainda não fez o quiz!';
+    detailEl.textContent = 'Vá até as páginas do Quiz (5, 6 e 7) e responda as 10 questões para ver seu resultado.';
+    return;
+  }
+
+  scoreEl.textContent = acertos + ' / ' + TOTAL_QUESTOES;
+  var pct = (acertos / TOTAL_QUESTOES) * 100;
+
+  if (pct === 100) {
+    msgEl.textContent = '🏆 Excelente! Nota máxima!';
+    detailEl.textContent = 'Você acertou todas as ' + TOTAL_QUESTOES + ' questões. Dominou o conteúdo!';
+  } else if (pct >= 80) {
+    msgEl.textContent = '👏 Muito bom!';
+    detailEl.textContent = 'Você acertou ' + acertos + ' de ' + TOTAL_QUESTOES + '. Quase perfeito, revise o que errou.';
+  } else if (pct >= 60) {
+    msgEl.textContent = '💪 Bom trabalho!';
+    detailEl.textContent = 'Você acertou ' + acertos + ' de ' + TOTAL_QUESTOES + '. Revise os pontos que errou e tente de novo.';
+  } else if (pct >= 40) {
+    msgEl.textContent = '📖 Continue estudando!';
+    detailEl.textContent = 'Você acertou ' + acertos + ' de ' + TOTAL_QUESTOES + '. Releia a teoria e refaça o quiz.';
+  } else {
+    msgEl.textContent = '🌱 Não desanime!';
+    detailEl.textContent = 'Você acertou ' + acertos + ' de ' + TOTAL_QUESTOES + '. Revise a teoria com calma e tente novamente.';
+  }
+}
+
+function reiniciarQuiz() {
+  acertos = 0;
+  respondidas = 0;
+  var quizzes = document.querySelectorAll('.quiz-q');
+  for (var q = 0; q < quizzes.length; q++) {
+    var quiz = quizzes[q];
+    quiz.dataset.locked = 'false';
+    var opts = quiz.querySelectorAll('.opt');
+    for (var o = 0; o < opts.length; o++) {
+      opts[o].classList.remove('selected', 'correct', 'wrong', 'disabled');
+      opts[o].querySelector('input').checked = false;
+    }
+    var btn = quiz.querySelector('.btn-confirmar');
+    btn.disabled = false;
+    btn.textContent = 'Confirmar';
+    quiz.querySelector('.feedback').textContent = '';
+    quiz.querySelector('.feedback').className = 'feedback';
+    quiz.querySelector('.gabarito-content').classList.remove('show');
+  }
+  goToPage(5);
+}
+
+menuToggle.addEventListener('click', function() {
+  sideMenu.classList.toggle('active');
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') { changePage(1); }
+  if (e.key === 'ArrowLeft') { changePage(-1); }
+});
+
+var touchstartX = 0;
+var touchendX = 0;
+document.addEventListener('touchstart', function(e) {
+  touchstartX = e.changedTouches[0].screenX;
+});
+document.addEventListener('touchend', function(e) {
+  touchendX = e.changedTouches[0].screenX;
+  if (touchstartX - touchendX > 50) { changePage(1); }
+  if (touchendX - touchstartX > 50) { changePage(-1); }
+});
+
+var optList = document.querySelectorAll('.opt');
+for (var a = 0; a < optList.length; a++) {
+  (function(opt) {
+    opt.addEventListener('click', function() { selecionar(opt); });
+  })(optList[a]);
+}
+
+updatePage();
+</script>
+</body>
+</html>
