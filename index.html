@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prof. Xande | Concursos — Matemática</title>
+<style>
+:root {
+  --primary: #0A1F44;
+  --accent: #F5B301;
+  --bg-box: #F0F4FA;
+  --text: #333333;
+  --white: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background: #1a2a3a; min-height: 100vh; color: var(--text); }
+
+.header {
+  background: linear-gradient(135deg, #0A1F44 0%, #12305e 100%);
+  color: var(--white);
+  text-align: center;
+  padding: 50px 20px 40px;
+}
+.header img { width: 140px; height: auto; margin-bottom: 15px; border-radius: 8px; }
+.header h1 { font-size: 32px; margin-bottom: 8px; }
+.header p { color: var(--accent); font-size: 16px; letter-spacing: 1px; text-transform: uppercase; }
+.header .divider { width: 60px; height: 3px; background: var(--accent); margin: 18px auto 0; border-radius: 3px; }
+
+.container { max-width: 1000px; margin: 0 auto; padding: 40px 20px 60px; }
+.section-title { color: var(--white); font-size: 22px; margin-bottom: 25px; text-align: center; }
+.section-title span { color: var(--accent); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: var(--text);
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+.card-top { display: flex; align-items: center; margin-bottom: 12px; }
+.num {
+  width: 42px; height: 42px;
+  background: var(--primary);
+  color: var(--accent);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold; font-size: 18px;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+.badge {
+  margin-left: auto;
+  font-size: 11px; font-weight: bold;
+  padding: 3px 10px; border-radius: 12px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.badge.disp { background: #e8f5e9; color: #2e7d32; }
+.card h3 { color: var(--primary); font-size: 17px; margin-bottom: 8px; }
+.card p { font-size: 13px; line-height: 1.6; color: #555; flex: 1; }
+.card .go { margin-top: 14px; font-weight: bold; color: var(--accent); font-size: 14px; }
+.card:hover .go { color: #c88600; }
+
+.footer {
+  background: var(--primary);
+  color: var(--white);
+  text-align: center;
+  padding: 25px 20px;
+  font-size: 13px;
+}
+.footer span { color: var(--accent); }
+
+@media (max-width: 600px) {
+  .header h1 { font-size: 26px; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="logo.png" alt="Logo Prof. Xande" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
+  <div id="fallbackLogo" style="display:none; font-size:80px; color:var(--accent); font-weight:bold; margin-bottom:10px;">X+</div>
+  <h1>Prof. Xande — Matemática com Propósito</h1>
+  <p>Concursos • Conteúdo Programático</p>
+  <div class="divider"></div>
+</div>
+
+<div class="container">
+  <div class="section-title">📚 <span>Menu de Capítulos</span></div>
+  <div class="grid">
+
+    <a class="card" href="conjuntos-numericos/">
+      <div class="card-top">
+        <div class="num">1</div>
+        <div class="badge disp">Disponível</div>
+      </div>
+      <h3>Conjuntos Numéricos</h3>
+      <p>Naturais, inteiros, racionais e reais; ordem, operações e suas propriedades.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="razao-proporcao/">
+      <div class="card-top">
+        <div class="num">2</div>
+        <div class="badge disp">Disponível</div>
+      </div>
+      <h3>Razão e Proporção</h3>
+      <p>Regra de três simples e composta; porcentagem.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="funcoes/">
+      <div class="card-top">
+        <div class="num">3</div>
+      </div>
+      <h3>Relações e Funções</h3>
+      <p>Funções polinomiais, exponenciais, logarítmicas e trigonométricas.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="equacoes/">
+      <div class="card-top">
+        <div class="num">4</div>
+      </div>
+      <h3>Equações</h3>
+      <p>Equações do 1º e 2º grau, exponenciais, logarítmicas e sistemas lineares.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="analise-combinatoria/">
+      <div class="card-top">
+        <div class="num">5</div>
+      </div>
+      <h3>Análise Combinatória</h3>
+      <p>Princípio fundamental da contagem; permutação; arranjo e combinação.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="probabilidade/">
+      <div class="card-top">
+        <div class="num">6</div>
+      </div>
+      <h3>Probabilidade Básica</h3>
+      <p>Probabilidade em espaços equiprováveis.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="estatistica/">
+      <div class="card-top">
+        <div class="num">7</div>
+      </div>
+      <h3>Estatística Básica</h3>
+      <p>Representação tabular e gráfica; média, mediana, moda; amplitude, variância, desvio padrão.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="matematica-financeira/">
+      <div class="card-top">
+        <div class="num">8</div>
+      </div>
+      <h3>Matemática Financeira</h3>
+      <p>Juros simples e compostos: montante, tempo, taxa e juro.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="geometria-plana/">
+      <div class="card-top">
+        <div class="num">9</div>
+      </div>
+      <h3>Geometria Plana</h3>
+      <p>Relações métricas no triângulo retângulo; perímetros e áreas.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+    <a class="card" href="geometria-espacial/">
+      <div class="card-top">
+        <div class="num">10</div>
+      </div>
+      <h3>Geometria Espacial</h3>
+      <p>Áreas e volumes.</p>
+      <div class="go">Acessar capítulo →</div>
+    </a>
+
+  </div>
+</div>
+
+<div class="footer">
+  <span>X+</span> Prof. Xande — Matemática com Propósito
+</div>
+
+</body>
+</html>
